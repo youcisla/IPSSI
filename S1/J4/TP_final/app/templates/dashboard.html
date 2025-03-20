@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block
+content %}
+<h1>Dashboard</h1>
+<a href="{{ url_for('main.logout') }}" class="btn btn-secondary">Logout</a>
+<a href="{{ url_for('main.new_ticket') }}" class="btn btn-primary"
+  >New Ticket</a
+>
+<ul class="list-group mt-3">
+  {% for ticket in tickets %}
+  <li class="list-group-item liste_ticket">
+    {{ ticket.title }} - {{ ticket.status }}
+    <div class="list-group liste_boutton">
+      <a
+        href="{{ url_for('main.edit_ticket', id=ticket.id) }}"
+        class="btn btn-info btn-sm edit_btn"
+        >Edit</a
+      >
+      <form
+        method="POST"
+        action="{{ url_for('main.delete_ticket', id=ticket.id) }}"
+        class="d-inline"
+      >
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

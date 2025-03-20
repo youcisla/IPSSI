@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Ticket' if ticket.id else 'New Ticket' }}{% endblock %}
+
+{% block content %}
+<h1>{{ 'Edit Ticket' if ticket.id else 'New Ticket' }}</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ ticket.title if ticket else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea class="form-control" id="description" name="description">{{ ticket.description if ticket else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="status">Status:</label>
+        <select class="form-control" id="status" name="status">
+            <option value="open" {% if ticket and ticket.status == 'open' %}selected{% endif %}>Open</option>
+            <option value="closed" {% if ticket and ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+            <option value="in progress" {% if ticket and ticket.status == 'in progress' %}selected{% endif %}>In Progress</option>
+            <option value="pending" {% if ticket and ticket.status == 'pending' %}selected{% endif %}>Pending</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">{{ 'Update' if ticket.id else 'Create' }}</button>
+</form>
+{% endblock %}

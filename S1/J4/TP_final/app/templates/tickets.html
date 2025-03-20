@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}User Tickets{% endblock %}
+
+{% block content %}
+<h1>User Tickets</h1>
+<ul class="list-group mt-3">
+    {% for ticket in tickets %}
+        <li class="list-group-item">{{ ticket.title }} - {{ ticket.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

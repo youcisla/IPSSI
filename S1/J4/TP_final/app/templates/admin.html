@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<h1>Admin</h1>
+
+<!-- New stats section -->
+<div class="card mb-4">
+    <div class="card-header">Dashboard Statistics</div>
+    <div class="card-body">
+        <p><strong>Total Users:</strong> {{ total_users }}</p>
+        <p><strong>Total Tickets:</strong> {{ total_tickets }}</p>
+        <p><strong>Active Users:</strong> {{ active_users }}</p>
+        <p><strong>Inactive Users:</strong> {{ inactive_users }}</p>
+        {% if latest_ticket %}
+            <p><strong>Latest Ticket:</strong> {{ latest_ticket.title }} - {{ latest_ticket.status }}</p>
+        {% else %}
+            <p><strong>Latest Ticket:</strong> None</p>
+        {% endif %}
+    </div>
+</div>
+
+<ul class="list-group mt-3">
+    {% for user in users %}
+        <li class="list-group-item">
+            {{ user.username }} - {{ user.role }} - {{ user.status }}
+            <a href="{{ url_for('main.user_tickets', id=user.id) }}" class="btn btn-info btn-sm">View Tickets</a>
+            <form method="POST" action="{{ url_for('main.modify_user_status', id=user.id) }}" class="d-inline">
+                <select name="status" class="form-control form-control-sm d-inline w-auto">
+                    <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="inactive" {% if user.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

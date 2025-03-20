@@ -1,0 +1,55 @@
+.liste_boutton {
+    width: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.liste_ticket {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.edit_btn{
+    flex: 1 1 0%;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode a {
+    color: #bb86fc;
+}
+
+.navbar.dark-mode,
+body.dark-mode .navbar {
+    background-color: #343a40 !important;
+}
+
+body.dark-mode .navbar-nav .nav-link,
+body.dark-mode .navbar-brand {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .btn {
+    background-color: #424242;
+    color: #e0e0e0;
+    border-color: #616161;
+}
+
+body.dark-mode .btn-outline-secondary {
+    background-color: transparent;
+    color: #e0e0e0;
+    border-color: #616161;
+}
+
+body.dark-mode .form-control {
+    background-color: #424242;
+    color: #e0e0e0;
+    border: 1px solid #616161;
+}
