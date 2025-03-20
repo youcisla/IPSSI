@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+{% block content %}
+  <h1 class="mb-4">Admin Panel</h1>
+  <ul class="list-group">
+    <li class="list-group-item"><a href="{{ url_for('admin_tasks') }}">View All Tasks</a></li>
+    <li class="list-group-item"><a href="{{ url_for('export_tasks') }}">Export Tasks (CSV)</a></li>
+    <li class="list-group-item"><a href="{{ url_for('import_tasks') }}">Import Tasks (CSV)</a></li>
+    <li class="list-group-item"><a href="{{ url_for('update_rewards') }}">Update Rewards</a></li>
+    <li class="list-group-item"><a href="{{ url_for('ranking') }}">View Ranking</a></li>
+  </ul>
+{% endblock %}

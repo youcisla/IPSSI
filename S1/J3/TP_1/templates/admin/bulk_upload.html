@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Bulk Upload - Task Manager{% endblock %}
+{% block content %}
+  <h1 class="mb-4">Bulk Upload Users</h1>
+  <form action="{{ url_for('bulk_upload') }}" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="file" class="form-label">Choose CSV File</label>
+      <input type="file" class="form-control" name="file" id="file" accept=".csv" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+  <hr>
+  <h6>CSV Format (Include Header Row):</h6>
+  <p>
+    username, email, password, isAdmin (optional, true/false), reward_points (optional)<br>
+    Example: <code>john,john@example.com,pass123,true,50</code>
+  </p>
+{% endblock %}

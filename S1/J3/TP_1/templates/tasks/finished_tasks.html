@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Finished Tasks{% endblock %}
+{% block content %}
+  <h1 class="mb-4 text-center">Finished Tasks</h1>
+  <ul class="list-unstyled">
+    {% for task in tasks %}
+    <li class="d-flex align-items-center mb-2">
+      <span class="flex-grow-1 text-decoration-line-through">{{ task.text }}</span>
+      <small class="ms-2">
+        {% if task.priority == 'Low' %}
+          <span class="badge bg-secondary">{{ task.priority }}</span>
+        {% elif task.priority == 'High' %}
+          <span class="badge bg-danger">{{ task.priority }}</span>
+        {% else %}
+          <span class="badge bg-primary">{{ task.priority }}</span>
+        {% endif %}
+        <span class="badge bg-success">Finished: {{ task.last_updated.strftime("%Y-%m-%d %H:%M") }}</span>
+      </small>
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

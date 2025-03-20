@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}User Ranking{% endblock %}
+{% block content %}
+  <style>
+    .gold { background-color: #ffd700; }
+    .gray { background-color: gray; }
+    .bronze { background-color: #cd7f32; }
+  </style>
+  <h1 class="mb-4">User Ranking</h1>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Rewards</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      {% set rank = loop.index %}
+      <tr class="
+          {% if rank == 1 %}gold{% elif rank == 2 %}gray{% elif rank == 3 %}bronze{% endif %}">
+        <td>{{ rank }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.reward_points }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <!-- Explanation note for rewards and rank colors -->
+  <div class="alert alert-info">
+    <p><strong>Reward Details:</strong> Users earn 1 point for finishing a Low priority task, 5 points for Normal, and 10 points for High.</p>
+    <p><strong>Top Ranking Colors:</strong> Gold (Rank 1), Gray (Rank 2), and Bronze (Rank 3).</p>
+  </div>
+{% endblock %}

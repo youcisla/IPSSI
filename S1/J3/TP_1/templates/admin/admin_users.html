@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}User List{% endblock %}
+{% block content %}
+  <h1 class="mb-4 text-center">User List and Their Data</h1>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Hashed Password</th>
+        <th>isAdmin</th>
+        <th>Assigned Tasks</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.password }}</td>
+        <td>{{ user.isAdmin }}</td>
+        <td>
+          <ul class="list-unstyled mb-0">
+            {% for task in user.tasks %}
+            <li>
+              <strong>{{ task.text }}</strong> - {{ task.priority }}<br>
+              Created: {{ task.created_time }}
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

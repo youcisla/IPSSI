@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Update Rewards{% endblock %}
+{% block content %}
+  <h1 class="mb-4">Update Rewards</h1>
+  <form action="{{ url_for('update_rewards') }}" method="post">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Current Rewards</th>
+          <th>New Reward</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.reward_points }}</td>
+          <td>
+            <input type="number" name="user_{{ user.id }}" class="form-control" value="{{ user.reward_points }}" required>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-success mt-3 text-center" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Home - Task Manager{% endblock %}
+{% block content %}
+  <h1 class="text-center mb-4">To-Do List</h1>
+  <!-- Explanation note -->
+  <div class="alert alert-info">
+    <p><strong>Reward System:</strong> Finishing a task awards points based on priority - Low: 1 point, Normal: 5 points, High: 10 points.</p>
+    <p><strong>Daily Task Limits:</strong> You may create a maximum of 20 Low, 10 Normal, and 5 High priority tasks per day.</p>
+  </div>
+  <!-- Filter form -->
+  <form method="get" action="{{ url_for('index') }}" class="mb-3">
+    <div class="row g-2">
+      <div class="col">
+        <select name="priority" class="form-select">
+          <option value="">All Priorities</option>
+          <option value="Low">Low</option>
+          <option value="Normal">Normal</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+      <div class="col">
+        <select name="status" class="form-select">
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+      <div class="col">
+        <input type="datetime-local" name="updated_after" class="form-control" placeholder="Updated After">
+      </div>
+      <div class="col">
+        <input type="datetime-local" name="updated_before" class="form-control" placeholder="Updated Before">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+      </div>
+    </div>
+  </form>
+  <form action="{{ url_for('add_task') }}" method="post" class="d-flex mb-3">
+    <input type="text" name="task" class="form-control me-2" placeholder="New Task">
+    <select name="priority" class="form-select me-2" style="max-width:120px;">
+      <option value="Low">Low</option>
+      <option value="Normal" selected>Normal</option>
+      <option value="High">High</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Add Task</button>
+  </form>
+  <ul class="list-unstyled">
+    {% for task in tasks %}
+    <li class="d-flex align-items-center mb-2">
+      <form action="{{ url_for('toggle_task', task_id=task.id) }}" method="post" class="me-2">
+        <input type="checkbox" onchange="this.form.submit()" class="form-check-input" {% if task.done %}checked{% endif %}>
+      </form>
+      <span id="task-text-{{ task.id }}" class="flex-grow-1 {% if task.done %}text-decoration-line-through text-muted{% endif %}">{{ task.text }}</span>
+      <small class="ms-2">
+        {# Wrap priority badge with an id for inline editing #}
+        {% if task.priority == 'Low' %}
+          <span id="task-priority-{{ task.id }}" class="badge bg-secondary">{{ task.priority }}</span>
+        {% elif task.priority == 'High' %}
+          <span id="task-priority-{{ task.id }}" class="badge bg-danger">{{ task.priority }}</span>
+        {% else %}
+          <span id="task-priority-{{ task.id }}" class="badge bg-primary">{{ task.priority }}</span>
+        {% endif %}
+        <span class="badge bg-info text-dark">Due: {{ task.due_time.strftime("%Y-%m-%d %H:%M") }}</span>
+      </small>
+      <button type="button" class="btn btn-secondary btn-sm ms-2 edit-task" data-task-id="{{ task.id }}">Edit</button>
+      {# New button to edit the task’s priority #}
+      <button type="button" class="btn btn-secondary btn-sm ms-2 edit-priority" data-task-id="{{ task.id }}" data-priority="{{ task.priority }}">Edit Priority</button>
+      <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" class="ms-2">
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}

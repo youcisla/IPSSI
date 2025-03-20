@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}All Tasks{% endblock %}
+{% block content %}
+  <h1 class="mb-4">All Tasks</h1>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Text</th>
+        <th>Done</th>
+        <th>Priority</th>
+        <th>Created Time</th>
+        <th>Last Updated</th>
+        <th>Due Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <tr>
+        <td>{{ task.id }}</td>
+        <td>{{ task.user.username }}</td>
+        <td>{{ task.text }}</td>
+        <td>{{ task.done }}</td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.created_time }}</td>
+        <td>{{ task.last_updated }}</td>
+        <td>{{ task.due_time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Import Tasks{% endblock %}
+{% block content %}
+  <h1 class="mb-4">Import Tasks (CSV)</h1>
+  <form action="{{ url_for('import_tasks') }}" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="file" class="form-label">Choose CSV File</label>
+      <input type="file" class="form-control" name="file" id="file" accept=".csv" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Import</button>
+  </form>
+{% endblock %}

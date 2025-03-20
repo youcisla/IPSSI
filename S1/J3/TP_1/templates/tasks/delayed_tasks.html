@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Delayed Tasks{% endblock %}
+{% block content %}
+  <h1 class="mb-4 text-center">Delayed Tasks</h1>
+  <ul class="list-unstyled">
+    {% for task in tasks %}
+    <li class="d-flex align-items-center mb-2">
+      <span class="flex-grow-1">{{ task.text }}</span>
+      <small class="ms-2 text-muted">
+        Priority: {{ task.priority }},
+        Due: {{ task.due_time.strftime("%Y-%m-%d %H:%M") }}
+      </small>
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

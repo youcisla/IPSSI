@@ -1,0 +1,11 @@
+body > div:nth-child(3) > table > tbody > tr.gold{
+    background: #ffd700 !important;
+}
+
+body > div:nth-child(3) > table > tbody > tr.gray{
+    background: gray !important;
+}
+
+body > div:nth-child(3) > table > tbody > tr.bronze{
+    background: #cd7f32 !important;
+}
