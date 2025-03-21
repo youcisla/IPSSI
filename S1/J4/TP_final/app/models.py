@@ -4,12 +4,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'  # changed from 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(512), nullable=False)
     role = db.Column(db.String(50), nullable=False)
-    status = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(255), nullable=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -20,8 +20,8 @@ class User(db.Model):
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # updated foreign key reference
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(255), nullable=False)
     user = db.relationship('User', backref=db.backref('tickets', lazy=True))

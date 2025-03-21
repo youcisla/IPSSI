@@ -3,37 +3,242 @@
 {% block title %}Admin{% endblock %}
 
 {% block content %}
-<h1>Admin</h1>
+<h1>
+    <i class="fas fa-user-shield"></i> Admin Panel
+</h1>
 
-<!-- New stats section -->
-<div class="card mb-4">
-    <div class="card-header">Dashboard Statistics</div>
-    <div class="card-body">
-        <p><strong>Total Users:</strong> {{ total_users }}</p>
-        <p><strong>Total Tickets:</strong> {{ total_tickets }}</p>
-        <p><strong>Active Users:</strong> {{ active_users }}</p>
-        <p><strong>Inactive Users:</strong> {{ inactive_users }}</p>
-        {% if latest_ticket %}
-            <p><strong>Latest Ticket:</strong> {{ latest_ticket.title }} - {{ latest_ticket.status }}</p>
-        {% else %}
-            <p><strong>Latest Ticket:</strong> None</p>
-        {% endif %}
+<!-- New Dashboard Statistics section with improved styling -->
+<div class="row">
+  <div class="col-md-3">
+    <div class="card text-white bg-primary mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-users fa-2x mr-3"></i>
+          <div>
+            <h5 class="card-title">Total Users</h5>
+            <h3>{{ total_users }}</h3>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card text-white bg-secondary mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-ticket-alt fa-2x mr-3"></i>
+          <div>
+            <h5 class="card-title">Total Tickets</h5>
+            <h3>{{ total_tickets }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card text-white bg-success mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-user-check fa-2x mr-3"></i>
+          <div>
+            <h5 class="card-title">Active Users</h5>
+            <h3>{{ active_users }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card text-white bg-danger mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-user-slash fa-2x mr-3"></i>
+          <div>
+            <h5 class="card-title">Inactive Users</h5>
+            <h3>{{ inactive_users }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<ul class="list-group mt-3">
+<!-- Latest Ticket card -->
+<div class="card mb-4">
+  <div class="card-header bg-info text-white">
+    <i class="fas fa-ticket-alt"></i> Latest Ticket
+  </div>
+  <div class="card-body">
+    {% if latest_ticket %}
+      <h5>{{ latest_ticket.title }}</h5>
+      <p>Status: <span class="badge badge-warning">{{ latest_ticket.status }}</span></p>
+    {% else %}
+      <p>No tickets available.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Updated User Cards -->
+<div class="row mt-3">
     {% for user in users %}
-        <li class="list-group-item">
-            {{ user.username }} - {{ user.role }} - {{ user.status }}
-            <a href="{{ url_for('main.user_tickets', id=user.id) }}" class="btn btn-info btn-sm">View Tickets</a>
-            <form method="POST" action="{{ url_for('main.modify_user_status', id=user.id) }}" class="d-inline">
-                <select name="status" class="form-control form-control-sm d-inline w-auto">
-                    <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
-                    <option value="inactive" {% if user.status == 'inactive' %}selected{% endif %}>Inactive</option>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm">Update</button>
-            </form>
-        </li>
+      <div class="col-md-4 mb-3">
+         <div class="card border-info shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-user"></i> {{ user.username }}
+                </h5>
+                <p class="card-text">
+                  {% if user.role == 'admin' %}
+                    <span class="badge" style="background-color: black; color: white; border: 2px solid gold;">
+                        Admin
+                    </span>
+                  {% else %}
+                    <span class="badge badge-primary">
+                        User
+                    </span>
+                  {% endif %}
+                  {% if user.status == 'active' %}
+                    <span class="badge badge-success">Active</span>
+                  {% elif user.status == 'inactive' %}
+                    <span class="badge badge-danger">Inactive</span>
+                  {% endif %}
+                </p>
+                <a href="{{ url_for('main.user_tickets', id=user.id) }}" class="btn btn-info btn-sm">
+                    <i class="fas fa-eye"></i> View Tickets
+                </a>
+                <form method="POST" action="{{ url_for('main.modify_user_status', id=user.id) }}" class="mt-2">
+                    <select name="status" class="form-control form-control-sm">
+                        <option value="active" {% if user.status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if user.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                </form>
+            </div>
+         </div>
+      </div>
     {% endfor %}
-</ul>
+</div>
+
+<!-- New section: All Tickets -->
+<div class="card mt-4">
+  <div class="card-header">
+    <i class="fas fa-ticket-alt"></i> All Tickets
+    <form method="GET" action="{{ url_for('main.admin') }}" class="form-inline float-right">
+      <input type="text" name="search" value="{{ search }}" placeholder="Search tickets" class="form-control mr-2">
+      <button type="submit" class="btn btn-outline-success">
+          <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      {% for ticket in tickets.items %}
+      <div class="col-md-4">
+        <div class="card mb-3">
+          <div class="card-body"
+            style="
+            {% if ticket.status == 'open' %}
+                background-color: #1e7e34; color: #fff;
+            {% elif ticket.status == 'closed' %}
+                background-color: #bd2130; color: #fff;
+            {% elif ticket.status == 'in progress' %}
+                background-color: #ffcd39; color: #000;
+            {% elif ticket.status == 'pending' %}
+                background-color: #117a8b; color: #fff;
+            {% else %}
+                background-color: #6c757d; color: #fff;
+            {% endif %}
+            ">
+            <h5 class="card-title">
+                <i class="fas fa-ticket-alt"></i> {{ ticket.title }}
+            </h5>
+            <p class="card-text">{{ ticket.description }}</p>
+            <p class="card-text">
+              {% if ticket.status == 'open' %}
+                <span class="badge" style="background-color: #1e7e34; color: #fff;">Open</span>
+              {% elif ticket.status == 'closed' %}
+                <span class="badge" style="background-color: #bd2130; color: #fff;">Closed</span>
+              {% elif ticket.status == 'in progress' %}
+                <span class="badge" style="background-color: #ffcd39; color: #000;">In Progress</span>
+              {% elif ticket.status == 'pending' %}
+                <span class="badge" style="background-color: #117a8b; color: #fff;">Pending</span>
+              {% else %}
+                <span class="badge badge-secondary">{{ ticket.status }}</span>
+              {% endif %}
+            </p>
+            <p class="card-text">
+              <span class="badge badge-info">
+                  <i class="fas fa-user"></i> {{ ticket.user.username }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card-footer">
+    <nav>
+      <ul class="pagination justify-content-center">
+        {% if tickets.has_prev %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('main.admin', page=tickets.prev_num, search=search) }}">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+              <span class="page-link"><i class="fas fa-chevron-left"></i> Previous</span>
+          </li>
+        {% endif %}
+        {% for p in tickets.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+          {% if p %}
+            {% if p == tickets.page %}
+              <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+            {% else %}
+              <li class="page-item">
+                  <a class="page-link" href="{{ url_for('main.admin', page=p, search=search) }}">{{ p }}</a>
+              </li>
+            {% endif %}
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+          {% endif %}
+        {% endfor %}
+        {% if tickets.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('main.admin', page=tickets.next_num, search=search) }}">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+              <span class="page-link">Next <i class="fas fa-chevron-right"></i></span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Fade in all cards with a slight delay for a staggered effect
+    const cards = document.querySelectorAll(".card");
+    cards.forEach((card, index) => {
+        card.style.opacity = 0;
+        setTimeout(() => {
+            card.style.transition = "opacity 0.5s";
+            card.style.opacity = 1;
+        }, index * 200);
+    });
+});
+</script>
 {% endblock %}

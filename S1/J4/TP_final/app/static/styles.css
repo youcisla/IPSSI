@@ -13,7 +13,7 @@
     flex-direction: row;
 }
 
-.edit_btn{
+.edit_btn {
     flex: 1 1 0%;
 }
 
@@ -52,4 +52,76 @@ body.dark-mode .form-control {
     background-color: #424242;
     color: #e0e0e0;
     border: 1px solid #616161;
+}
+
+/* Add fade-in animation to the navbar brand */
+.navbar-brand {
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Improve badge (ticket tag) appearance */
+.badge {
+    border-radius: 12px;
+    padding: 5px 10px;
+}
+
+body>div>div.row.mt-3>div>div,
+body>div>div:nth-child(3)>div>div,
+body>div>div.card.mb-4,
+body>div>div.card.mt-4>div.card-body>div>div>div>div,
+a,
+button,
+body>div>div.row.mt-3>div>div>div.card-body,
+li.disabled,
+li.disabled>span,
+li.active,
+li.active>span {
+    border-radius: 1rem !important;
+}
+
+body>div>div.card.mb-4>div.card-header.bg-info.text-white,
+body>div>div.card.mt-4>div.card-header,
+body>div>div.card.mt-4,
+body>div>div.card.mb-4>div.card-header.bg-primary.text-white,
+body>div>div.card.mx-auto>div.card-header.bg-primary.text-white.text-center,
+body>div>div.card.mx-auto>div.card-header.bg-success.text-white.text-center,
+body>div>div.card.mx-auto {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+body>div>div.card.mt-4>div.card-body>div>div>div>div>h5 {
+    gap: 1rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+body>div>div.card.mt-4>div.card-body>div>div>div {
+    border: none !important;
+}
+
+.alert {
+    border-radius: 1rem;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

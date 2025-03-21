@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ 'Edit Ticket' if ticket.id else 'New Ticket' }}{% endblock %}
+{% block title %}{{ 'Edit Ticket' if ticket and ticket.id else 'New Ticket' }}{% endblock %}
 
 {% block content %}
-<h1>{{ 'Edit Ticket' if ticket.id else 'New Ticket' }}</h1>
+<h1>{{ 'Edit Ticket' if ticket and ticket.id else 'New Ticket' }}</h1>
 <form method="POST">
     <div class="form-group">
         <label for="title">Title:</label>

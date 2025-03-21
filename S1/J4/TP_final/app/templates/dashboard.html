@@ -1,29 +1,113 @@
-{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block
-content %}
-<h1>Dashboard</h1>
-<a href="{{ url_for('main.logout') }}" class="btn btn-secondary">Logout</a>
-<a href="{{ url_for('main.new_ticket') }}" class="btn btn-primary"
-  >New Ticket</a
->
-<ul class="list-group mt-3">
-  {% for ticket in tickets %}
-  <li class="list-group-item liste_ticket">
-    {{ ticket.title }} - {{ ticket.status }}
-    <div class="list-group liste_boutton">
-      <a
-        href="{{ url_for('main.edit_ticket', id=ticket.id) }}"
-        class="btn btn-info btn-sm edit_btn"
-        >Edit</a
-      >
-      <form
-        method="POST"
-        action="{{ url_for('main.delete_ticket', id=ticket.id) }}"
-        class="d-inline"
-      >
-        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-      </form>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>
+    <i class="fas fa-tachometer-alt"></i> Dashboard
+</h1>
+<!-- Removed logout button from here -->
+<!-- Ticket Creation Explanation Section -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="fas fa-info-circle"></i> How to Create a Ticket
     </div>
-  </li>
+    <div class="card-body">
+        <p>A ticket includes the following fields:</p>
+        <ul>
+            <li><strong>Title:</strong> A brief summary of your issue.</li>
+            <li><strong>Description:</strong> Detailed explanation of the issue.</li>
+            <li><strong>Status:</strong> Choose from open, closed, in progress, or pending.</li>
+        </ul>
+        <a href="{{ url_for('main.new_ticket') }}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Create New Ticket
+        </a>
+    </div>
+</div>
+<form method="GET" action="{{ url_for('main.dashboard') }}" class="form-inline mt-3">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search tickets" class="form-control mr-2">
+    <select name="status" class="form-control mr-2">
+        <option value="">All Statuses</option>
+        <option value="open" {% if status_filter=='open' %} selected {% endif %}>Open</option>
+        <option value="closed" {% if status_filter=='closed' %} selected {% endif %}>Closed</option>
+        <option value="in progress" {% if status_filter=='in progress' %} selected {% endif %}>In Progress</option>
+        <option value="pending" {% if status_filter=='pending' %} selected {% endif %}>Pending</option>
+    </select>
+    <button type="submit" class="btn btn-outline-success">
+        <i class="fas fa-search"></i> Filter
+    </button>
+</form>
+<div class="row mt-3">
+  {% for ticket in tickets.items %}
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-body"
+           style="background-color: #f8f9fa;">
+        <h5 class="card-title">
+            <i class="fas fa-ticket-alt"></i> {{ ticket.title }}
+        </h5>
+        <p class="card-text">{{ ticket.description }}</p>
+        <p class="card-text">
+          {% if ticket.status == 'open' %}
+            <span class="badge badge-success">Open</span>
+          {% elif ticket.status == 'closed' %}
+            <span class="badge badge-danger">Closed</span>
+          {% elif ticket.status == 'in progress' %}
+            <span class="badge badge-warning">In Progress</span>
+          {% elif ticket.status == 'pending' %}
+            <span class="badge badge-info">Pending</span>
+          {% else %}
+            <span class="badge badge-secondary">{{ ticket.status }}</span>
+          {% endif %}
+        </p>
+      </div>
+      <div class="card-footer">
+        <a href="{{ url_for('main.edit_ticket', id=ticket.id) }}" class="btn btn-info btn-sm">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <form method="POST" action="{{ url_for('main.delete_ticket', id=ticket.id) }}" class="d-inline">
+          <button type="submit" class="btn btn-danger btn-sm">
+              <i class="fas fa-trash"></i> Delete
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
   {% endfor %}
-</ul>
+</div>
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if tickets.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('main.dashboard', page=tickets.prev_num, search=search, status=status_filter) }}">
+            <i class="fas fa-chevron-left"></i> Previous
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link"><i class="fas fa-chevron-left"></i> Previous</span>
+      </li>
+    {% endif %}
+    {% for p in tickets.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        {% if p == tickets.page %}
+          <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+        {% else %}
+          <li class="page-item">
+              <a class="page-link" href="{{ url_for('main.dashboard', page=p, search=search, status=status_filter) }}">{{ p }}</a>
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+    {% if tickets.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('main.dashboard', page=tickets.next_num, search=search, status=status_filter) }}">
+            Next <i class="fas fa-chevron-right"></i>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Next <i class="fas fa-chevron-right"></i></span></li>
+    {% endif %}
+  </ul>
+</nav>
 {% endblock %}

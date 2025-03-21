@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session, flash
 from .models import db, User, Ticket
 from functools import wraps
+from sqlalchemy import or_
 
 bp = Blueprint('main', __name__)
 
@@ -24,8 +25,19 @@ def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('main.login'))
     user_id = session['user_id']
-    tickets = Ticket.query.filter_by(user_id=user_id).all()
-    return render_template('dashboard.html', tickets=tickets)
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '').strip()
+    status_filter = request.args.get('status', '').strip()
+    if session.get('role') == 'admin':
+        query = Ticket.query
+    else:
+        query = Ticket.query.filter_by(user_id=user_id)
+    if search:
+        query = query.filter((Ticket.title.ilike(f"%{search}%")) | (Ticket.description.ilike(f"%{search}%")))
+    if status_filter:
+        query = query.filter_by(status=status_filter)
+    tickets = query.order_by(Ticket.id.desc()).paginate(page=page, per_page=9, error_out=False)
+    return render_template('dashboard.html', tickets=tickets, search=search, status_filter=status_filter)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -53,7 +65,6 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # set defaults for new users
         role = 'user'
         status = 'active'
         if User.query.filter_by(username=username).first():
@@ -71,16 +82,20 @@ def register():
 def new_ticket():
     if 'user_id' not in session:
         return redirect(url_for('main.login'))
+    # New user existence check
+    user = User.query.get(session['user_id'])
+    if not user:
+        flash("User not found. Please log in again.", "danger")
+        return redirect(url_for('main.login'))
     if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
         status = request.form['status']
-        user_id = session['user_id']
-        ticket = Ticket(title=title, description=description, status=status, user_id=user_id)
+        ticket = Ticket(title=title, description=description, status=status, user_id=user.id)
         db.session.add(ticket)
         db.session.commit()
         flash('Ticket created successfully!', 'success')
-        return redirect(url_for('main.dashboard', _external=True))  # changed line
+        return redirect(url_for('main.dashboard', _external=True))
     return render_template('ticket_form.html', ticket=None)
 
 @bp.route('/tickets/<int:id>/edit', methods=['GET', 'POST'])
@@ -118,7 +133,13 @@ def admin():
     active_users = User.query.filter_by(status='active').count()
     inactive_users = User.query.filter_by(status='inactive').count()
     latest_ticket = Ticket.query.order_by(Ticket.id.desc()).first()
-    return render_template('admin.html', users=users, total_users=total_users, total_tickets=total_tickets, active_users=active_users, inactive_users=inactive_users, latest_ticket=latest_ticket)
+    search = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)
+    query = Ticket.query
+    if search:
+        query = query.filter(or_(Ticket.title.ilike(f"%{search}%"), Ticket.description.ilike(f"%{search}%"), Ticket.status.ilike(f"%{search}%")))
+    tickets_pagination = query.order_by(Ticket.id.desc()).paginate(page=page, per_page=9, error_out=False)
+    return render_template('admin.html', users=users, total_users=total_users, total_tickets=total_tickets, active_users=active_users, inactive_users=inactive_users, latest_ticket=latest_ticket, tickets=tickets_pagination, search=search)
 
 @bp.route('/admin/user/<int:id>/tickets')
 @admin_required
